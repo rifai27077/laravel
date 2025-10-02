@@ -7,15 +7,19 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-   public function index()
+    public function index(Request $request)
     {
         $query = Product::query();
-        if (request('search')) {
-            $query->where('nama', 'like', '%' . request('search') . '%');
+
+        if ($request->has('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
         }
-        $products = $query->orderBy('id', 'desc')->paginate(5);
+
+        $products = $query->orderBy('id', 'asc')->paginate(5);
+
         return view('products.index', compact('products'));
     }
+
     public function create()
     {
         return view('products.create');
@@ -28,15 +32,10 @@ class ProductController extends Controller
             'harga' => 'required|numeric',
             'deskripsi' => 'nullable',
         ]);
-        $maxId = Product::max('id');
-        $validated['id'] = $maxId ? $maxId + 1 : 1;
-        Product::create($validated);
-        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambah!');
-    }
 
-    public function show(Product $product)
-    {
-        
+        Product::create($validated);
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambah!');
     }
 
     public function edit(Product $product)
@@ -51,13 +50,17 @@ class ProductController extends Controller
             'harga' => 'required|numeric',
             'deskripsi' => 'nullable',
         ]);
+
         $product->update($validated);
+
         return redirect()->route('products.index')->with('success', 'Produk berhasil diupdate!');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
+
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
     }
 }
+

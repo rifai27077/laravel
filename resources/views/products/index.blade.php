@@ -12,6 +12,7 @@
                     <div class="section-title mb-3 mb-md-0">Daftar Produk</div>
                     <a href="{{ route('products.create') }}" class="btn btn-primary shadow-sm">Tambah Produk</a>
                 </div>
+
                 <form action="{{ route('products.index') }}" method="GET" class="mb-4 row g-2">
                     <div class="col-md-5">
                         <input type="text" name="search" class="form-control" placeholder="Cari nama produk..." value="{{ request('search') }}">
@@ -20,11 +21,12 @@
                         <button type="submit" class="btn btn-secondary w-100">Cari</button>
                     </div>
                 </form>
+
                 <div class="table-responsive">
                     <table class="table table-modern align-middle">
                         <thead>
                             <tr>
-                                <th style="width:60px;">ID</th>
+                                <th style="width:60px;">No</th>
                                 <th>Nama</th>
                                 <th>Harga</th>
                                 <th>Deskripsi</th>
@@ -32,9 +34,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($products as $product)
+                            @forelse($products as $key => $product)
                             <tr>
-                                <td class="fw-semibold">{{ $product->id }}</td>
+                                <td class="fw-semibold">{{ $products->firstItem() + $key }}</td>
                                 <td>{{ $product->nama }}</td>
                                 <td class="text-success fw-bold">Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
                                 <td>{{ $product->deskripsi }}</td>
@@ -55,6 +57,7 @@
                         </tbody>
                     </table>
                 </div>
+
                 <div class="d-flex justify-content-end mt-3">
                     {{ $products->withQueryString()->links() }}
                 </div>
@@ -63,3 +66,4 @@
     </div>
 </div>
 @endsection
+
